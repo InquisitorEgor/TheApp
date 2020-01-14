@@ -8,6 +8,7 @@ public interface SocketThreadListener {
 
     void onSocketThreadReady(SocketThread thread, Socket socket);
     void onReceiveString(SocketThread thread, Socket socket, String value);
+//    void onSendUserStatus(SocketThread thread, String value);
 
     void onSocketThreadException(SocketThread thread, Exception e);
 }

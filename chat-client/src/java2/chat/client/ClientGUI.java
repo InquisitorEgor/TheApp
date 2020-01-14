@@ -1,6 +1,6 @@
 package java2.chat.client;
 
-//import java2.chat.common.Library;
+
 import java2.network.SocketThread;
 import java2.network.SocketThreadListener;
 
@@ -17,6 +17,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     private static final int HEIGHT = 300;
 
     private final JTextArea log = new JTextArea();
+    private final JTextArea users = new JTextArea();
     private final JPanel panelTop = new JPanel(new GridLayout(2, 3));
     private final JTextField tfIPAddress = new JTextField("127.0.0.1");
     private final JTextField tfPort = new JTextField("8189");
@@ -30,7 +31,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     private final JTextField tfMessage = new JTextField();
     private final JButton btnSend = new JButton("Send");
 
-    private final JList<String> userList = new JList<>();
+    //private final JList<String> userList = new JList<>();
     private boolean shownIoErrors = false;
     private SocketThread socketThread;
 
@@ -53,9 +54,9 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         log.setEditable(false);
         log.setLineWrap(true);
         JScrollPane scrollLog = new JScrollPane(log);
-        JScrollPane scrollUsers = new JScrollPane(userList);
-        String[] users = {"user1_with_an_exceptionally_long_nickname", "user2", "user3", "user4", "user5", "user6", "user7", "user8", "user9", "user10"};
-        userList.setListData(users);
+        JScrollPane scrollUsers = new JScrollPane(users);
+        //String[] users = {"user1", "user2", "user3", "user4", "user5", "user6", "user7", "user8", "user9", "user10"};
+        //userList.setListData(users);
         scrollUsers.setPreferredSize(new Dimension(100, 0));
         cbAlwaysOnTop.addActionListener(this);
         btnLogin.addActionListener(this);
@@ -78,6 +79,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         add(scrollLog, BorderLayout.CENTER);
         add(panelBottom, BorderLayout.SOUTH);
         add(scrollUsers, BorderLayout.EAST);
+
         setVisible(true);
     }
 
@@ -102,7 +104,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         Object src = e.getSource();
         if (src == cbAlwaysOnTop) {
             setAlwaysOnTop(cbAlwaysOnTop.isSelected());
-        }  else if (src == btnSend || src == tfMessage) {
+        } else if (src == btnSend || src == tfMessage) {
             sendMessage();
         } else if (src == btnLogin) {
             connect();
@@ -113,13 +115,15 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
         }
     }
 
+
     private void sendMessage() {
         String msg = tfMessage.getText();
         String username = tfLogin.getText();
         if ("".equals(msg)) return;
         tfMessage.setText(null);
         tfMessage.requestFocusInWindow();
-        socketThread.sendMessage(msg);
+        socketThread.sendMessage(username + ": " + msg);
+//        socketThread.updateUserInformation("@"+username);
 //        putLog(String.format("%s: %s", username, msg));
 //        wrtMsgToLogFile(msg, username);
     }
@@ -175,9 +179,7 @@ public class ClientGUI extends JFrame implements ActionListener, Thread.Uncaught
     public void onSocketThreadReady(SocketThread thread, Socket socket) {
         panelBottom.setVisible(true);
         panelTop.setVisible(false);
-//        String login = tfLogin.getText();
-//        String password = new String(tfPassword.getPassword());
-//        thread.sendMessage(Library.getAuthRequest(login, password));
+
     }
 
     @Override
